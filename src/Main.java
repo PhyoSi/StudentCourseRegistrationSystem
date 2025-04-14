@@ -1,10 +1,9 @@
+import exception.CourseNotFoundException;
+import java.util.Scanner;
 import model.Course;
 import model.Student;
 import utils.FileManager;
 import utils.RegistrationSystem;
-import exception.CourseNotFoundException;
-
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -79,6 +78,10 @@ public class Main {
                     }
                     break;
                 case "4":
+                    if (system.getStudents().isEmpty()) {
+                        System.out.println("No students registered.");
+                        break;
+                    }
                     for (Student s : system.getStudents()) {
                         s.displayInfo();
                         System.out.println("Courses:");
@@ -89,6 +92,10 @@ public class Main {
                     }
                     break;
                 case "5":
+                    if (system.getCourses().isEmpty()) {
+                        System.out.println("No courses available.");
+                        break;
+                    }
                     System.out.println("Available Courses:");
                     for (Course c : system.getCourses()) {
                         System.out.println(" - " + c);
