@@ -1,11 +1,10 @@
 package utils;
 
-import model.Course;
-import model.Student;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.Course;
+import model.Student;
 
 public class FileManager {
     private static final String STUDENT_FILE = "students.txt";
@@ -40,7 +39,22 @@ public class FileManager {
                 courses.add(new Course(parts[0], parts[1]));
             }
         }
-        reader.close();
         return courses;
+    }
+
+    public static List<Student> loadStudents() throws IOException {
+        List<Student> students = new ArrayList<>();
+        File file = new File(STUDENT_FILE);
+        if (!file.exists()) return students;
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length == 2) {
+                students.add(new Student(parts[0], parts[1]));
+            }
+        }
+        return students;
     }
 }
