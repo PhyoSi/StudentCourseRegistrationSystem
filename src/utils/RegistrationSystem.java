@@ -1,11 +1,10 @@
 package utils;
 
 import exception.CourseNotFoundException;
-import model.Course;
-import model.Student;
-
 import java.util.ArrayList;
 import java.util.List;
+import model.Course;
+import model.Student;
 
 public class RegistrationSystem {
     private List<Student> students = new ArrayList<>();
@@ -24,20 +23,11 @@ public class RegistrationSystem {
     }
 
     public void registerStudentToCourse(Student student, String courseId) throws CourseNotFoundException {
-        Course course = findCourseById(courseId);
+        Course course = getCourseById(courseId);
         if (course == null) {
             throw new CourseNotFoundException("Course not found: " + courseId);
         }
         student.registerCourse(course);
-    }
-
-    public Course findCourseById(String id) {
-        for (Course c : courses) {
-            if (c.getCourseId().equalsIgnoreCase(id)) {
-                return c;
-            }
-        }
-        return null;
     }
     
     public List<Student> getStudents() {
