@@ -22,6 +22,8 @@ public class RegistrationSystem {
         return courses;
     }
 
+    // Register a student to a course by course ID
+    // If the course is not found, throw a CourseNotFoundException
     public void registerStudentToCourse(Student student, String courseId) throws CourseNotFoundException {
         Course course = getCourseById(courseId);
         if (course == null) {

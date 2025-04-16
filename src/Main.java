@@ -1,4 +1,5 @@
 import exception.CourseNotFoundException;
+import java.util.Iterator;
 import java.util.Scanner;
 import model.Course;
 import model.Student;
@@ -43,7 +44,7 @@ public class Main {
 	                }
 	
 	                try {
-	                    Course course = system.getCourseById(courseId); // Get course object
+	                    Course course = system.getCourseById(courseId);             // Get course object
 	                    system.registerStudentToCourse(existingStudent, courseId);
 	                    System.out.println("[SUCCESS] " + existingStudent.getName() + " registered for " + course.getCourseName() + "!");
 	                } catch (CourseNotFoundException e) {
@@ -68,8 +69,16 @@ public class Main {
                     if (dropStudent == null) {
                         System.out.println("Student not found.");
                     } else {
-                        boolean removed = dropStudent.getRegisteredCourses()
-                                .removeIf(course -> course.getCourseId().equalsIgnoreCase(dropCourseId));
+                        boolean removed = false;
+                        Iterator<Course> iterator = dropStudent.getRegisteredCourses().iterator();      // Iterate through the list of registered courses
+                        while (iterator.hasNext()) {
+                            Course course = iterator.next();
+                            if (course.getCourseId().equalsIgnoreCase(dropCourseId)) {
+                                iterator.remove();
+                                removed = true;
+                                break;
+                            }
+                        }
                         if (removed) {
                             System.out.println("Course dropped successfully.");
                         } else {
@@ -116,6 +125,7 @@ public class Main {
         }
     }
 
+    // This method finds a student by ID in the registration system.
     private static Student findStudentById(RegistrationSystem system, String id) {
         for (Student s : system.getStudents()) {
             if (s.getId().equalsIgnoreCase(id)) {
