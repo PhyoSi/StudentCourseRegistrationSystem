@@ -30,36 +30,75 @@ public class Main {
 
             switch (choice) {
 	            case "1":
-	                System.out.print("Enter Student ID: ");
-	                String studentId = scanner.nextLine();
-	                System.out.print("Enter Student Name: ");
-	                String studentName = scanner.nextLine();
-	                System.out.print("Enter Course Code: ");
-	                String courseId = scanner.nextLine();
-	
-	                Student existingStudent = findStudentById(system, studentId);
-	                if (existingStudent == null) {
-	                    existingStudent = new Student(studentId, studentName);
-	                    system.addStudent(existingStudent);
-	                }
-	
-	                try {
-	                    Course course = system.getCourseById(courseId);             // Get course object
-	                    system.registerStudentToCourse(existingStudent, courseId);
-	                    System.out.println("[SUCCESS] " + existingStudent.getName() + " registered for " + course.getCourseName() + "!");
-	                } catch (CourseNotFoundException e) {
-	                    System.out.println("[ERROR] " + e.getMessage());
-	                }
-	                break;
+                    try {
+                        System.out.print("Enter Student ID: ");
+                        String studentIdInput = scanner.nextLine();
+                        int studentId = Integer.parseInt(studentIdInput);
+
+                        System.out.print("Enter Student Name: ");
+                        String studentName = scanner.nextLine();
+
+                        // Prevent numeric names
+                        if (studentName.matches("\\d+")) {
+                            throw new IllegalArgumentException("Student name cannot be numeric.");
+                        }
+
+                        // Check if student ID is valid
+                        if (studentId <= 0) {
+                            throw new IllegalArgumentException("Student ID must be a positive number.");
+                        }
+
+                        // Check if student name contains only alphabetic characters and spaces
+                        if (!studentName.matches("^[a-zA-Z ]+$")) {
+                            throw new IllegalArgumentException("Student name must contain only alphabetic characters and spaces.");
+                        }
+
+                        System.out.print("Enter Course Code: ");
+                        String courseId = scanner.nextLine();
+
+                        // Convert int ID back to string for consistency
+                        String studentIdStr = String.valueOf(studentId);
+
+                        Student existingStudent = findStudentById(system, studentIdStr);
+                        if (existingStudent == null) {
+                            existingStudent = new Student(studentIdStr, studentName);
+                            system.addStudent(existingStudent);
+                        }
+
+                        Course course = system.getCourseById(courseId);
+                        system.registerStudentToCourse(existingStudent, courseId);
+                        System.out.println("[SUCCESS] " + studentName + " registered for " + course.getCourseName() + "!");
+
+                    } catch (NumberFormatException e) {
+                        System.out.println("[ERROR] Student ID must be a number.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("[ERROR] " + e.getMessage());
+                    } catch (CourseNotFoundException e) {
+                        System.out.println("[ERROR] " + e.getMessage());
+                    }
+                    break;
 
                 case "2":
-                    System.out.print("Enter Course ID: ");
-                    String cid = scanner.nextLine();
-                    System.out.print("Enter Course Name: ");
-                    String cname = scanner.nextLine();
-                    system.addCourse(new Course(cid, cname));
-                    System.out.println("Course added.");
+                    try {
+                        System.out.print("Enter Course ID: ");
+                        String cid = scanner.nextLine();
+                        System.out.print("Enter Course Name: ");
+                        String cname = scanner.nextLine();
+
+                        // Prevent numeric course names
+                        if (cname.matches("\\d+")) {
+                            throw new IllegalArgumentException("Course name cannot be numeric.");
+                        }
+
+                        system.addCourse(new Course(cid, cname));
+                        System.out.println("Course added.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("[ERROR] " + e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("[ERROR] Could not add course: " + e.getMessage());
+                    }
                     break;
+
                 case "3":
                     System.out.print("Enter Student ID: ");
                     String sid = scanner.nextLine();
@@ -86,6 +125,7 @@ public class Main {
                         }
                     }
                     break;
+
                 case "4":
                     if (system.getStudents().isEmpty()) {
                         System.out.println("No students registered.");
@@ -100,6 +140,7 @@ public class Main {
                         System.out.println();
                     }
                     break;
+
                 case "5":
                     if (system.getCourses().isEmpty()) {
                         System.out.println("No courses available.");
@@ -110,6 +151,7 @@ public class Main {
                         System.out.println(" - " + c);
                     }
                     break;
+
                 case "6":
                     try {
                         FileManager.saveStudents(system.getStudents());
